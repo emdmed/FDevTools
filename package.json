@@ -1,7 +1,7 @@
 {
-  "name": "FDevTools",
+  "name": "fdevtools",
   "version": "0.1.0",
-  "description": "",
+  "description": "A dev-tools context menu in your react or nextJS app",
   "type": "module",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
@@ -12,7 +12,7 @@
     "build": "rollup -c",
     "watch": "rollup -c --watch"
   },
-  "keywords": [],
+  "keywords": ["devtools", "UI", "frontend"],
   "author": "",
   "license": "ISC",
   "dependencies": {
