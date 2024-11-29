@@ -1,0 +1,49 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+.fdevtools-grid-vertical {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  border-top: none !important;
+  border-bottom: none !important;
+  border-style: dashed;
+  border-width: 1px;
+  border-color: red;
+}
+
+.fdevtools-grid-horizontal {
+  position: absolute;
+  left: 0;
+  right: 0;
+  border-right: none !important;
+  border-left: none !important;
+  border-style: dashed;
+  border-width: 1px;
+  border-color: red;
+}
+
+.attribute-section * {
+  scrollbar-width: thin;
+  scrollbar-color: #2d2d2d white;
+}
+
+.attribute-section::-webkit-scrollbar {
+  width: 2px;
+}
+
+.attribute-section::-webkit-scrollbar-track {
+  background: #2d2d2d;
+  /* Dark background for the track */
+  border-radius: 15px;
+  /* Rounded corners for the track */
+}
+
+.attribute-section::-webkit-scrollbar-thumb {
+  background: #5a5a5a;
+  /* Dark gray scrollbar thumb */
+  border-radius: 10px;
+  /* Rounded corners for the thumb */
+}
