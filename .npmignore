@@ -1,4 +1,8 @@
+# Ignore unnecessary files
 src/
 node_modules/
 .babelrc
 tsconfig.json
+
+# Allow dist/ directory
+!dist/

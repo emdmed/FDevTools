@@ -14,13 +14,19 @@ const ModifyCodeButton: React.FC<ModifyCodeButtonPops> = ({ target }) => {
   const sendTargetToBackend = async (target: HTMLElement) => {
     const parsedTarget = elementToObject(target);
 
+    const payload = {
+      parsedTarget,
+    };
+
     const response = await fetch("http://localhost:1216/modify-element", {
       method: "POST",
-      body: JSON.stringify({
-        parsedTarget,
-        payload: "this is the payload",
-      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
     });
+
+    console.log(await response.json());
   };
 
   return (
