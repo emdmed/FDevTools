@@ -4,7 +4,8 @@
 
 
 .fdevtools-grid-vertical {
-  position: absolute;
+  z-index: 99999 !important;
+  position: fixed;
   top: 0;
   bottom: 0;
   border-top: none !important;
@@ -15,7 +16,8 @@
 }
 
 .fdevtools-grid-horizontal {
-  position: absolute;
+  z-index: 99999 !important;
+  position: fixed;
   left: 0;
   right: 0;
   border-right: none !important;

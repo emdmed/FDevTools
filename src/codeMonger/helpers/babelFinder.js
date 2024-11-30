@@ -24,14 +24,17 @@ export function findReactFiles(dir) {
 }
 
 // Function to parse and traverse React code
-export function findReactElementInCode(code, tagName, attributes, innerText) {
+export function findReactElementInCode(code, tagName, attributes, newTarget, filePath) {
     try {
+
+
         const ast = parse(code, {
             sourceType: 'module',
             plugins: ['jsx', 'typescript'],
         });
 
         let foundCode = null;
+        let modified = false
 
         traverse(ast, {
             JSXElement(path) {
@@ -39,46 +42,51 @@ export function findReactElementInCode(code, tagName, attributes, innerText) {
 
                 if (elementName === tagName) {
 
-                    const classNameAttr = path.node.openingElement.attributes.filter(attr => attr.name.name === "className")[0] || false
-
-                    /*                     console.log("classNameAttr", classNameAttr.value.value)
-                                        console.log("payload class", attributes.class) */
+                    let classNameAttr = path.node.openingElement.attributes.filter(attr => attr.name.name === "className")[0] || false
 
                     const attrMatches = classNameAttr.value.value === attributes.class
 
-                    //console.log("path.node.openingElement", path.node.openingElement, "attributes", attributes)
                     const idAttribute = path.node.openingElement.attributes.find(
                         (attr) => attr.name && attr.name.name === "id"
                       );
 
                     const idMatch = idAttribute?.value?.value === attributes.id
-                    console.log("idAttribute value", idAttribute?.value?.value, "idMatch", idMatch)
-
-
-                    /*       const innerTextMatches = path.node.children.some(child => {
-      
-                              console.log("check inner text", child, innerText)
-      
-                              return (
-                                  child.type === 'JSXText' &&
-                                  child.value.trim() === innerText.trim()
-                              );
-                          }); */
-
-                    //classname attr done, innertTextMatches missing
 
                     if (attrMatches && idMatch) {
+                        console.log("found element", newTarget )
+                        if(newTarget && newTarget.attributes.class){
+                            console.log("modify class")
+                            classNameAttr.value.value = newTarget.attributes.class
+                        } else {
+                            path.node.openingElement.attributes.push({
+                                type: 'JSXAttribute',
+                                name: { type: 'JSXIdentifier', name: 'className' },
+                                value: { type: 'StringLiteral', value: newTarget.attributes.class },
+                            });
+                        }
+
                         foundCode = code.slice(
                             path.node.start,
                             path.node.end
                         );
+                        modified = true;
                         path.stop(); // Stop traversal once we find a match
                     }
                 }
             },
         });
-        console.log("foundCode", foundCode)
-        return foundCode;
+
+        if (modified) {
+            // Generate the updated code
+            console.log("generate updated code")
+            const updatedCode = generate(ast).code;
+            console.log("updated code: ", updatedCode)
+            fs.writeFileSync(filePath, updatedCode, "utf-8");
+            return updatedCode;
+        } else {
+            console.log("No matching element found.");
+            return code; // Return the original code if no modifications were made
+        }
     } catch (err) {
         console.error('Error parsing code:', err);
         return null;

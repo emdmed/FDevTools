@@ -33,17 +33,13 @@ app.post('/modify-element', (req, res) => {
 
   const { parsedOriginalTarget, parsedNewTarget } = req.body;
 
-  //console.log('parsedOriginalTarget:', parsedOriginalTarget, "parsedNewTarget: ", parsedNewTarget);
-
-  const { tagName, attributes, innerText } = parsedOriginalTarget;
-
   const projectDir = path.join(__dirname, reactSrcPath); // Update path
   const reactFiles = findReactFiles(devreactPath);
 
   for (const file of reactFiles) {
     const code = fs.readFileSync(file, 'utf-8');
-    const matchingCode = findReactElementInCode(code, tagName, attributes, innerText);
-
+    const matchingCode = findReactElementInCode(code, parsedOriginalTarget.tagName, parsedOriginalTarget.attributes,parsedNewTarget, file);
+    if(matchingCode) console.log("file", file)
     if (matchingCode) {
       return res.json({
         message: `Found matching React code in ${file}`,

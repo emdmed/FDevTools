@@ -40,8 +40,10 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
   setContextMenu,
   setIsGrid,
 }) => {
+
   const target = contextMenu.event.completeEvent?.target as HTMLElement;
-  const originalTarget = contextMenu.event.completeEvent?.target as HTMLElement;
+  const originalTarget = target.cloneNode(true) as HTMLElement;
+  
   const [innerHTMLValue, setInnerHTMLValue] = useState<string>(
     target.innerHTML
   );

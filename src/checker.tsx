@@ -71,7 +71,7 @@ const Checker: React.FC<CheckerProps> = ({ children }) => {
     if (!contextMenu.visible) {
       setIsGrid(false);
     } else {
-      setIsGrid(true);
+      setIsGrid(false);
     }
   }, [contextMenu.visible]);
 
