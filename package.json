@@ -6,10 +6,6 @@
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
   "types": "dist/types/index.d.ts",
-  "exports": {
-    ".": "./dist/index.cjs.js",
-    "./server": "./dist/server/index.js"
-  },
   "scripts": {
     "build:css": "postcss src/styles.css -o dist/styles.css",
     "build:js": "tsc",
