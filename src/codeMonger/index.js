@@ -1,5 +1,7 @@
 import express from 'express';
-import bodyParser from 'body-parser';
+import { findReactElementInCode, findReactFiles } from "./helpers/babelFinder.js"
+import fs from 'fs';
+import path from 'path';
 const cors = require('cors');
 
 const corsOptions = {
@@ -8,10 +10,11 @@ const corsOptions = {
   credentials: true, // Enable cookies if needed
 };
 
-
+const projectRoot = process.cwd();
+const reactSrcPath = path.join(projectRoot, 'src');
+let devreactPath = "/home/enrique/projects/FDevtools-workspace/fdevtools-test-app"
 // If you still need these Node.js modules
-import fs from 'fs';
-import path from 'path';
+
 
 // Babel utilities
 import { parse as babelParser } from '@babel/parser';
@@ -28,12 +31,29 @@ app.use(express.json());
 // Endpoint
 app.post('/modify-element', (req, res) => {
 
-  console.log("body", req.body)
   const { parsedTarget, payload } = req.body;
 
-  console.log('Target:', parsedTarget, 'Payload:', payload);
+  console.log('Target:', parsedTarget);
 
-  res.send({ message: 'Data received and processed.' });
+  const { tagName, attributes, innerText } = parsedTarget;
+
+  const projectDir = path.join(__dirname, reactSrcPath); // Update path
+  console.log("devreactPath", devreactPath)
+  const reactFiles = findReactFiles(devreactPath);
+
+  for (const file of reactFiles) {
+    const code = fs.readFileSync(file, 'utf-8');
+    const matchingCode = findReactElementInCode(code, tagName, attributes, innerText);
+
+    if (matchingCode) {
+      return res.json({
+        message: `Found matching React code in ${file}`,
+        code: matchingCode,
+      });
+    }
+  }
+
+  res.json({ message: 'No matching code found.' });
 });
 
 // Start the server
