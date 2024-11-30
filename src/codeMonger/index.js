@@ -31,14 +31,13 @@ app.use(express.json());
 // Endpoint
 app.post('/modify-element', (req, res) => {
 
-  const { parsedTarget, payload } = req.body;
+  const { parsedOriginalTarget, parsedNewTarget } = req.body;
 
-  console.log('Target:', parsedTarget);
+  //console.log('parsedOriginalTarget:', parsedOriginalTarget, "parsedNewTarget: ", parsedNewTarget);
 
-  const { tagName, attributes, innerText } = parsedTarget;
+  const { tagName, attributes, innerText } = parsedOriginalTarget;
 
   const projectDir = path.join(__dirname, reactSrcPath); // Update path
-  console.log("devreactPath", devreactPath)
   const reactFiles = findReactFiles(devreactPath);
 
   for (const file of reactFiles) {

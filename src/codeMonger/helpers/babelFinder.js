@@ -20,7 +20,6 @@ export function findReactFiles(dir) {
         }
     }
 
-    console.log("reactFiles", reactFiles)
     return reactFiles;
 }
 
@@ -37,22 +36,38 @@ export function findReactElementInCode(code, tagName, attributes, innerText) {
         traverse(ast, {
             JSXElement(path) {
                 const elementName = path.node.openingElement.name.name;
-                console.log("elementName", elementName)
+
                 if (elementName === tagName) {
-                    const attrMatches = path.node.openingElement.attributes.every(attr => {
-                        const key = attr.name.name;
-                        const value = attr.value.value || '';
-                        return attributes[key] === value;
-                    });
 
-                    const innerTextMatches = path.node.children.some(child => {
-                        return (
-                            child.type === 'JSXText' &&
-                            child.value.trim() === innerText.trim()
-                        );
-                    });
+                    const classNameAttr = path.node.openingElement.attributes.filter(attr => attr.name.name === "className")[0] || false
 
-                    if (attrMatches && innerTextMatches) {
+                    /*                     console.log("classNameAttr", classNameAttr.value.value)
+                                        console.log("payload class", attributes.class) */
+
+                    const attrMatches = classNameAttr.value.value === attributes.class
+
+                    //console.log("path.node.openingElement", path.node.openingElement, "attributes", attributes)
+                    const idAttribute = path.node.openingElement.attributes.find(
+                        (attr) => attr.name && attr.name.name === "id"
+                      );
+
+                    const idMatch = idAttribute?.value?.value === attributes.id
+                    console.log("idAttribute value", idAttribute?.value?.value, "idMatch", idMatch)
+
+
+                    /*       const innerTextMatches = path.node.children.some(child => {
+      
+                              console.log("check inner text", child, innerText)
+      
+                              return (
+                                  child.type === 'JSXText' &&
+                                  child.value.trim() === innerText.trim()
+                              );
+                          }); */
+
+                    //classname attr done, innertTextMatches missing
+
+                    if (attrMatches && idMatch) {
                         foundCode = code.slice(
                             path.node.start,
                             path.node.end
@@ -62,7 +77,7 @@ export function findReactElementInCode(code, tagName, attributes, innerText) {
                 }
             },
         });
-
+        console.log("foundCode", foundCode)
         return foundCode;
     } catch (err) {
         console.error('Error parsing code:', err);

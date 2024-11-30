@@ -4,18 +4,21 @@ import { elementToObject } from "@/helpers/elementToObject";
 
 interface ModifyCodeButtonPops {
   target: HTMLElement;
+  originalTarget: HTMLElement
 }
 
-const ModifyCodeButton: React.FC<ModifyCodeButtonPops> = ({ target }) => {
+const ModifyCodeButton: React.FC<ModifyCodeButtonPops> = ({ target, originalTarget }) => {
   const onClick = () => {
-    sendTargetToBackend(target);
+    sendTargetToBackend(originalTarget, target);
   };
 
-  const sendTargetToBackend = async (target: HTMLElement) => {
-    const parsedTarget = elementToObject(target);
+  const sendTargetToBackend = async (originalTarget: HTMLElement, target: HTMLElement, ) => {
+    const parsedOriginalTarget = elementToObject(originalTarget);
+    const parsedNewTarget = elementToObject(target)
 
     const payload = {
-      parsedTarget,
+      parsedOriginalTarget,
+      parsedNewTarget
     };
 
     const response = await fetch("http://localhost:1216/modify-element", {

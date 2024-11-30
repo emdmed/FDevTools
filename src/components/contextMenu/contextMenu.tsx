@@ -41,6 +41,7 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
   setIsGrid,
 }) => {
   const target = contextMenu.event.completeEvent?.target as HTMLElement;
+  const originalTarget = contextMenu.event.completeEvent?.target as HTMLElement;
   const [innerHTMLValue, setInnerHTMLValue] = useState<string>(
     target.innerHTML
   );
@@ -107,7 +108,7 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
           <div className="flex items-center">
             <span>{`<${target.localName}>`}</span>
             <ToggleGridButton setIsGrid={setIsGrid} />
-            <ModifyCodeButton target={target} />
+            <ModifyCodeButton target={target} originalTarget={originalTarget} />
           </div>
           <CloseContextMenuButton
             setContextMenu={setContextMenu}

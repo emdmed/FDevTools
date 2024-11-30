@@ -16,6 +16,11 @@ export function elementToObject(element: HTMLElement) {
       styles: element.style.cssText, // Inline styles as a string
       innerText: element.innerText, // Text content inside the element
       htmlContent: element.innerHTML, // HTML content inside the element
+      parent: {
+        name: element.parentElement?.nodeName,
+        class: element.parentElement?.classList,
+        id:  element.parentElement?.id
+      }
     };
   
     return object;
