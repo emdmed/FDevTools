@@ -32,7 +32,7 @@ const IdChecker: React.FC<IdCheckerProps> = ({ target }) => {
       >
         {target.id}
       </Badge>}
-      {target?.id && <small>None</small>}
+      {!target?.id && <small>None</small>}
       {isCopied && <small className="text-slate-500 mx-2">Copied!</small>}
     </div>
   );
