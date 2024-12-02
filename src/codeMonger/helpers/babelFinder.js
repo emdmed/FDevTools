@@ -36,6 +36,8 @@ export function findReactElementInCode(code, tagName, attributes, newTarget, fil
         let foundCode = null;
         let modified = false
 
+
+
         traverse(ast, {
             JSXElement(path) {
                 const elementName = path.node.openingElement.name.name;
@@ -43,6 +45,8 @@ export function findReactElementInCode(code, tagName, attributes, newTarget, fil
                 if (elementName === tagName) {
 
                     let classNameAttr = path.node.openingElement.attributes.filter(attr => attr.name.name === "className")[0] || false
+
+                    console.log("classNameAttr", classNameAttr, "attributes.class", attributes.class)
 
                     const attrMatches = classNameAttr.value.value === attributes.class
 
@@ -52,7 +56,7 @@ export function findReactElementInCode(code, tagName, attributes, newTarget, fil
 
                     const idMatch = idAttribute?.value?.value === attributes.id
 
-                    if (attrMatches && idMatch) {
+                    if (idMatch) {
                         console.log("found element", newTarget )
                         if(newTarget && newTarget.attributes.class){
                             console.log("modify class")
@@ -78,9 +82,7 @@ export function findReactElementInCode(code, tagName, attributes, newTarget, fil
 
         if (modified) {
             // Generate the updated code
-            console.log("generate updated code")
             const updatedCode = generate(ast).code;
-            console.log("updated code: ", updatedCode)
             fs.writeFileSync(filePath, updatedCode, "utf-8");
             return updatedCode;
         } else {
