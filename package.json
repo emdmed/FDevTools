@@ -12,12 +12,15 @@
     "build": "rollup -c",
     "watch": "rollup -c --watch"
   },
+  "author": {
+    "name": "emdmed",
+    "email": "fastdevtools@gmail.com"
+  },
   "keywords": [
     "devtools",
     "UI",
     "frontend"
   ],
-  "author": "",
   "license": "ISC",
   "homepage": "https://tender-symptoms-807968.framer.app/",
   "repository": {
