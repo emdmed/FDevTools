@@ -112,7 +112,10 @@ const ClassChecker: React.FC<ClassCheckerProps> = ({ target }) => {
             </>
           )}
         </div>
+
         <div className="flex items-center justify-end">
+          {copied && <small className="text-slate-500">Copied!</small>}
+
           {!editMode && (
             <Badge
               variant="outline"
@@ -139,7 +142,6 @@ const ClassChecker: React.FC<ClassCheckerProps> = ({ target }) => {
                     : ""
                 }`}
               </Badge>
-              {copied && <small className="text-slate-500">Copied!</small>}
             </>
           )}
         </div>

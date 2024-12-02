@@ -1,6 +1,6 @@
 import { Badge } from "../../ui/badge";
 import { TerminalSquare } from "lucide-react";
-import { elementToObject } from "@/helpers/elementToObject";
+import { elementToObject } from "../../../helpers/elementToObject";
 import { useState } from "react";
 
 interface ModifyCodeButtonPops {
