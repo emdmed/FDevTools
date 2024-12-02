@@ -19,6 +19,10 @@ const ClassChecker: React.FC<ClassCheckerProps> = ({ target }) => {
   const [addClassValue, setAddClassValue] = useState("");
 
   useEffect(() => {
+    setClasses([...target.classList]);
+  }, [target, [...target.classList]]);
+
+  useEffect(() => {
     if (copied) {
       const timer = setTimeout(() => {
         setCopied(false);
@@ -59,13 +63,17 @@ const ClassChecker: React.FC<ClassCheckerProps> = ({ target }) => {
 
   const onKeyDown = (e: any) => {
     if (e.key === "Enter") {
-      addClassToElement(e.target.value)
+      addClassToElement(e.target.value);
     }
   };
 
   const addClassToElement = (string: string) => {
-    toggleClass(target, string, "add");
-    setClasses([...classes, string]);
+    const stringArray = string.split(" ") || string;
+
+    stringArray.forEach((stringClass) =>
+      toggleClass(target, stringClass, "add")
+    );
+
     setAddClassValue("");
   };
 
@@ -94,13 +102,6 @@ const ClassChecker: React.FC<ClassCheckerProps> = ({ target }) => {
                 className="mx-2 bg-white focus:border focus:border-black"
                 style={{ height: 25 }}
               />
-              <Badge
-                onClick={() => addClassToElement(addClassValue)}
-                variant="outline"
-                className="mx-2 p-1 cursor-pointer border-0 font-normal text-slate-950"
-              >
-                <Check size={15} />
-              </Badge>
               <Badge
                 onClick={() => setEditMode(false)}
                 variant="outline"
