@@ -25,8 +25,7 @@ export function findReactFiles(dir) {
 
 
 const addOrModifyClass = ({ newTarget, classNameAttr, path }) => {
-    if (newTarget && newTarget.attributes.class) {
-        console.log("modify class")
+    if (classNameAttr?.value && classNameAttr?.value?.value || classNameAttr?.value?.value === "") {
         classNameAttr.value.value = newTarget.attributes.class
     } else {
         path.node.openingElement.attributes.push({
@@ -37,7 +36,6 @@ const addOrModifyClass = ({ newTarget, classNameAttr, path }) => {
     }
 
     let modified = true;
-    path.stop();
     return { modified }
 }
 
@@ -49,8 +47,9 @@ const writeModifedCode = ({ ast, filePath }) => {
 
 // Function to parse and traverse React code
 export function findReactElementInCode(code, target, newTarget, filePath) {
-    try {
 
+    try {
+        let modifiedCodeSuccesfully = false
         const ast = parse(code, {
             sourceType: 'module',
             plugins: ['jsx', 'typescript'],
@@ -64,9 +63,9 @@ export function findReactElementInCode(code, target, newTarget, filePath) {
 
                     let classNameAttr = path.node.openingElement.attributes.filter(attr => attr.name.name === "className")[0] || false
 
-                    console.log("classNameAttr", classNameAttr, "attributes.class", target.attributes.class)
+                    console.log("classNameAttr", !!classNameAttr?.value?.value, "attributes.class", !!target?.attributes?.class)
 
-                    const classNameMatch = classNameAttr.value.value === target.attributes.class
+                    const classNameMatch = !!classNameAttr?.value?.value === !!target?.attributes?.class
 
                     const idAttribute = path.node.openingElement.attributes.find(
                         (attr) => attr.name && attr.name.name === "id"
@@ -77,36 +76,38 @@ export function findReactElementInCode(code, target, newTarget, filePath) {
                     const innerHTMLMatch = path.node.openingElement.innerHtml === target.innerHtml
 
                     if (idMatch) {
+
                         const { modified } = addOrModifyClass({ newTarget, classNameAttr, path, code })
 
                         if (modified) {
-                            console.log("Found and modified code")
                             writeModifedCode({ ast, code, filePath })
+                            modifiedCodeSuccesfully = true
                         } else {
-                            console.log("No matching element found.");
-                            return code
+                            modifiedCodeSuccesfully = true
                         }
-                    }
 
-                    if (innerHTMLMatch && classNameMatch) {
+                        //path.stop();
+
+                    } else if (innerHTMLMatch && classNameMatch) {
                         const { modified } = addOrModifyClass({ newTarget, classNameAttr, path, code })
 
                         if (modified) {
-                            console.log("Found and modified code")
                             writeModifedCode({ ast, code, filePath })
+                            modifiedCodeSuccesfully = true
                         } else {
-                            console.log("No matching element found.");
-                            return code
+                            modifiedCodeSuccesfully = true
                         }
+                        // path.stop();
                     }
+
 
                 }
             },
         });
-
+        return modifiedCodeSuccesfully
     } catch (err) {
         console.error('Error parsing code:', err);
-        return null;
+        return false;
     }
 }
 
