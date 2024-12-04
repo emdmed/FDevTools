@@ -57,25 +57,18 @@ const ModifyCodeButton: React.FC<ModifyCodeButtonPops> = ({
 
   return (
     <Badge
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
       id="updatecode"
-      className={`mx-2 border-0 cursor-pointer p-1 bg-cyan-700 text-white hover:bg-cyan-800 transition-all ease-in-out duration-300 h-[25px] ${
-        isHover ? "w-[110px]" : "w-[24px]"
-      }`}
+      className={`mx-2 border-0 cursor-pointer p-1 bg-cyan-700 text-white hover:bg-cyan-800 transition-all ease-in-out duration-300 h-[25px]`}
       onClick={onClick}
     >
-      <div className="flex items-center justify-center overflow-hidden">
+      <div className="flex items-center justify-center items-center overflow-hidden">
         <TerminalSquare size={15} />
-        {showText && (
           <span
-            className={`ml-2 transition-opacity duration-500 ${
-              isHover ? "opacity-100" : "opacity-0"
-            }`}
+            className={`px-2 align-text-bottom`}
           >
             Update code
           </span>
-        )}
+
       </div>
     </Badge>
   );

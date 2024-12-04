@@ -18,9 +18,9 @@ const ClassChecker: React.FC<ClassCheckerProps> = ({ target }) => {
   const [editMode, setEditMode] = useState(false);
   const [addClassValue, setAddClassValue] = useState("");
 
-  useEffect(() => {
+   useEffect(() => {
     setClasses([...target.classList]);
-  }, [target, [...target.classList]]);
+  }, [target.className]); 
 
   useEffect(() => {
     if (copied) {
