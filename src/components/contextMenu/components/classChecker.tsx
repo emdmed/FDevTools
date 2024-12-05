@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { copyToClipboard } from "../../../helpers/copyToClipboard";
 import { Check, Copy, SquarePen, X } from "lucide-react";
 import { Badge } from "../../ui/badge";
@@ -12,15 +12,16 @@ interface ClassCheckerProps {
 const ClassChecker: React.FC<ClassCheckerProps> = ({ target }) => {
   const [copied, setCopied] = useState(false);
   const [classes, setClasses] = useState([...target.classList]);
+  const inputRef = useRef<HTMLInputElement | null>(null);
 
   const [isMultipleSelect, setIsMultipleSelect] = useState(false);
   const [selectedArray, setSelectedArray] = useState<string[]>([]);
   const [editMode, setEditMode] = useState(false);
   const [addClassValue, setAddClassValue] = useState("");
 
-   useEffect(() => {
+  useEffect(() => {
     setClasses([...target.classList]);
-  }, [target.className]); 
+  }, [target.className]);
 
   useEffect(() => {
     if (copied) {
@@ -39,6 +40,10 @@ const ClassChecker: React.FC<ClassCheckerProps> = ({ target }) => {
   useEffect(() => {
     if (isMultipleSelect) copyToClipboard(`.${selectedArray.join(" .")}`);
   }, [selectedArray, isMultipleSelect]);
+
+  useEffect(() => {
+    if (editMode && inputRef.current) inputRef.current.focus();
+  }, [editMode]);
 
   const handleClassSelect = (element: string) => {
     if (!editMode) {
@@ -65,6 +70,10 @@ const ClassChecker: React.FC<ClassCheckerProps> = ({ target }) => {
     if (e.key === "Enter") {
       addClassToElement(e.target.value);
     }
+
+    if ((e.key = "Escape")) {
+      setEditMode(false);
+    }
   };
 
   const addClassToElement = (string: string) => {
@@ -78,7 +87,7 @@ const ClassChecker: React.FC<ClassCheckerProps> = ({ target }) => {
   };
 
   return (
-    <div className="attribute-section border-b pb-2">
+    <div className="attribute-section border-b pb-2" onKeyDown={onKeyDown}>
       <div className="my-1 flex items-center justify-between">
         <div className="flex items-center">
           <small className="font-medium">Classes</small>
@@ -95,6 +104,7 @@ const ClassChecker: React.FC<ClassCheckerProps> = ({ target }) => {
           {editMode && (
             <>
               <Input
+                ref={inputRef}
                 value={addClassValue}
                 onChange={(e) => setAddClassValue(e.target.value)}
                 onKeyDown={onKeyDown}

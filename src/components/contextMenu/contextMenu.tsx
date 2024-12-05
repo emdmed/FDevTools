@@ -102,7 +102,7 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
         top: contextMenu?.event.clientY + 25,
         left: contextMenu?.event.clientX + 25,
         zIndex: 99999,
-        transition: "top 0.2s, left 0.2s", // Smooth adjustments
+        transition: "top 0.2s, left 0.2s", 
       }}
     >
       <CardHeader className="p-2">
@@ -122,18 +122,15 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
         <ClassChecker target={target} />
         {target?.id && <IdChecker target={target} />}
       </CardContent>
-      {/*       <CardContent className="px-2 pb-2">
-        <PositionDialog boundingClient={boundingClient} style={style} />
-      </CardContent> */}
-      <CardContent className="px-2 pb-2">
+{/*       <CardContent className="px-2 pb-2">
         <InnerHTMLEditor
           setInnerHTMLValue={setInnerHTMLValue}
           innerHTMLValue={innerHTMLValue}
         />
-      </CardContent>
-      <CardContent className="px-2 pb-2">
+      </CardContent> */}
+{/*       <CardContent className="px-2 pb-2">
         <PositionControls target={target} setStyle={setStyle} />
-      </CardContent>
+      </CardContent> */}
       <CardContent className="px-2 pb-2">
         <ColorSelectors target={target} />
       </CardContent>
