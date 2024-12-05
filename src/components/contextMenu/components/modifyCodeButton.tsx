@@ -7,11 +7,13 @@ import { useEffect, useState } from "react";
 interface ModifyCodeButtonPops {
   target: HTMLElement;
   originalTarget: HTMLElement;
+  classes: string[]
 }
 
 const ModifyCodeButton: React.FC<ModifyCodeButtonPops> = ({
   target,
   originalTarget,
+  classes
 }) => {
   const [isError, setIsError] = useState({ message: "" });
   const [isSuccess, setIsSuccess] = useState(false);
@@ -70,7 +72,7 @@ const ModifyCodeButton: React.FC<ModifyCodeButtonPops> = ({
 
   return (
     <Button
-      disabled={!target.className}
+      disabled={!classes || classes.length === 0}
       id="updatecode"
       className={`mx-2 border-0 cursor-pointer p-1 ${buttonClass}  text-white transition-all ease-in-out duration-300 h-[25px]`}
       onClick={onClick}

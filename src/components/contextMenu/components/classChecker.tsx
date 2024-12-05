@@ -7,11 +7,17 @@ import { toggleClass } from "@/helpers/toggleClass";
 
 interface ClassCheckerProps {
   target: HTMLElement;
+  classes: string[];
+  setClasses: any
 }
 
-const ClassChecker: React.FC<ClassCheckerProps> = ({ target }) => {
+const ClassChecker: React.FC<ClassCheckerProps> = ({
+  target,
+  classes,
+  setClasses,
+}) => {
   const [copied, setCopied] = useState(false);
-  const [classes, setClasses] = useState([...target.classList]);
+
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   const [isMultipleSelect, setIsMultipleSelect] = useState(false);
@@ -71,7 +77,7 @@ const ClassChecker: React.FC<ClassCheckerProps> = ({ target }) => {
       addClassToElement(e.target.value);
     }
 
-    if ((e.key = "Escape")) {
+    if (e.key === "Escape") {
       setEditMode(false);
     }
   };
