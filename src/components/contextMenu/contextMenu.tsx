@@ -43,12 +43,13 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
 
   const target = contextMenu.event.completeEvent?.target as HTMLElement;
   const originalTarget = target.cloneNode(true) as HTMLElement;
-  
+  const [classes, setClasses] = useState([...target.classList]);
+
   const [innerHTMLValue, setInnerHTMLValue] = useState<string>(
     target.innerHTML
   );
-  const [style, setStyle] = useState<CSSStyleDeclaration>(target.style);
-  const [boundingClient] = useState<DOMRect>(target.getBoundingClientRect());
+  /*   const [style, setStyle] = useState<CSSStyleDeclaration>(target.style);
+  const [boundingClient] = useState<DOMRect>(target.getBoundingClientRect()); */
   const contextMenuRef = useRef(null);
 
   useEffect(() => {
@@ -78,7 +79,6 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
         adjustedLeft = windowWidth - rect.width - 10;
       }
 
-      // Apply adjustments
       card.style.top = `${adjustedTop}px`;
       card.style.left = `${adjustedLeft}px`;
     };
@@ -102,40 +102,28 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
         top: contextMenu?.event.clientY + 25,
         left: contextMenu?.event.clientX + 25,
         zIndex: 99999,
-        transition: "top 0.2s, left 0.2s", // Smooth adjustments
+        transition: "top 0.2s, left 0.2s",
       }}
     >
       <CardHeader className="p-2">
         <CardTitle className="flex justify-between items-center">
           <div className="flex items-center">
-            <span>{`<${target.localName}>`}</span>
-            <ToggleGridButton setIsGrid={setIsGrid} />
-            <ModifyCodeButton target={target} originalTarget={originalTarget} />
+            <span className="me-2">{`<${target.localName}>`}</span>
+            <ModifyCodeButton classes={classes} target={target} originalTarget={originalTarget} />
           </div>
-          <CloseContextMenuButton
-            setContextMenu={setContextMenu}
-            contextMenu={contextMenu}
-          />
+          <div className="flex items-center">
+            <ToggleGridButton setIsGrid={setIsGrid} />
+            <CloseContextMenuButton
+              setContextMenu={setContextMenu}
+              contextMenu={contextMenu}
+            />
+          </div>
         </CardTitle>
       </CardHeader>
+
       <CardContent className="px-2 pb-2">
-        <ClassChecker target={target} />
+        <ClassChecker classes={classes} setClasses={setClasses} target={target} />
         {target?.id && <IdChecker target={target} />}
-      </CardContent>
-      {/*       <CardContent className="px-2 pb-2">
-        <PositionDialog boundingClient={boundingClient} style={style} />
-      </CardContent> */}
-      <CardContent className="px-2 pb-2">
-        <InnerHTMLEditor
-          setInnerHTMLValue={setInnerHTMLValue}
-          innerHTMLValue={innerHTMLValue}
-        />
-      </CardContent>
-      <CardContent className="px-2 pb-2">
-        <PositionControls target={target} setStyle={setStyle} />
-      </CardContent>
-      <CardContent className="px-2 pb-2">
-        <ColorSelectors target={target} />
       </CardContent>
     </Card>
   );

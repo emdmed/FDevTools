@@ -1,36 +1,35 @@
 import { Badge } from "../../ui/badge";
+import { Button } from "../../ui/button";
 import { TerminalSquare } from "lucide-react";
-import { elementToObject } from "../../../helpers/elementToObject";
-import { useState } from "react";
+import { elementToObject } from "@/helpers/elementToObject";
+import { useEffect, useState } from "react";
 
 interface ModifyCodeButtonPops {
   target: HTMLElement;
   originalTarget: HTMLElement;
+  classes: string[]
 }
 
 const ModifyCodeButton: React.FC<ModifyCodeButtonPops> = ({
   target,
   originalTarget,
+  classes
 }) => {
-  const [isHover, setIsHover] = useState(false);
-  const [showText, setShowText] = useState(false);
+  const [isError, setIsError] = useState({ message: "" });
+  const [isSuccess, setIsSuccess] = useState(false);
 
   const onClick = () => {
     sendTargetToBackend(originalTarget, target);
   };
 
-  const handleMouseEnter = () => {
-    setIsHover(true);
-    // Delay the appearance of the text
-    setTimeout(() => {
-      setShowText(true);
-    }, 400); // Match the duration of the width transition
-  };
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsSuccess(false);
+      setIsError({ message: "" });
+    }, 1500);
 
-  const handleMouseLeave = () => {
-    setIsHover(false);
-    setShowText(false); // Hide text immediately on hover exit
-  };
+    return () => clearTimeout(timer);
+  }, [isSuccess, isError.message]);
 
   const sendTargetToBackend = async (
     originalTarget: HTMLElement,
@@ -44,40 +43,49 @@ const ModifyCodeButton: React.FC<ModifyCodeButtonPops> = ({
       parsedNewTarget,
     };
 
-    const response = await fetch("http://localhost:1216/modify-element", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    });
+    try {
+      const response = await fetch("http://localhost:1216/modify-element", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
 
-    console.log(await response.json());
+      if (!response.ok) setIsError({ message: "Request failed" });
+
+      const data = await response.json();
+
+      if (data.code) setIsSuccess(true);
+    } catch (e) {
+      setIsError({ message: "Error" });
+    }
   };
 
+  const buttonClass = isSuccess
+    ? "bg-teal-500"
+    : isError.message
+    ? "bg-rose-600"
+    : "bg-cyan-700 hover:bg-cyan-600";
+
+    console.log(" target clasname", target.className, "classlist", [...target.classList])
+
   return (
-    <Badge
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
+    <Button
+      disabled={!classes || classes.length === 0}
       id="updatecode"
-      className={`mx-2 border-0 cursor-pointer p-1 bg-cyan-700 text-white hover:bg-cyan-800 transition-all ease-in-out duration-300 h-[25px] ${
-        isHover ? "w-[110px]" : "w-[24px]"
-      }`}
+      className={`mx-2 border-0 cursor-pointer p-1 ${buttonClass}  text-white transition-all ease-in-out duration-300 h-[25px]`}
       onClick={onClick}
     >
-      <div className="flex items-center justify-center overflow-hidden">
+      <div className="flex items-center justify-center items-center overflow-hidden">
         <TerminalSquare size={15} />
-        {showText && (
-          <span
-            className={`ml-2 transition-opacity duration-500 ${
-              isHover ? "opacity-100" : "opacity-0"
-            }`}
-          >
-            Update code
-          </span>
-        )}
+        <span className={`px-2 align-text-bottom`}>
+          {isError.message && "Could not update code"}
+          {isSuccess && "Code updated!"}
+          {!isSuccess && !isError.message && "Update code"}
+        </span>
       </div>
-    </Badge>
+    </Button>
   );
 };
 

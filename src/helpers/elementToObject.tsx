@@ -15,7 +15,7 @@ export function elementToObject(element: HTMLElement) {
       attributes: attributes, // Element's attributes as key-value pairs
       styles: element.style.cssText, // Inline styles as a string
       innerText: element.innerText, // Text content inside the element
-      htmlContent: element.innerHTML, // HTML content inside the element
+      innerHTML: element.innerHTML, // HTML content inside the element
       parent: {
         name: element.parentElement?.nodeName,
         class: element.parentElement?.classList,
