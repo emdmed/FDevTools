@@ -6,20 +6,22 @@ import { useEffect, useState } from "react";
 
 interface ModifyCodeButtonPops {
   target: HTMLElement;
-  originalTarget: HTMLElement;
-  classes: string[]
+  originalElement: HTMLElement | null;
+  classes: string[];
 }
 
 const ModifyCodeButton: React.FC<ModifyCodeButtonPops> = ({
   target,
-  originalTarget,
-  classes
+  originalElement,
+  classes,
 }) => {
   const [isError, setIsError] = useState({ message: "" });
   const [isSuccess, setIsSuccess] = useState(false);
 
   const onClick = () => {
-    sendTargetToBackend(originalTarget, target);
+    if (originalElement) {
+      sendTargetToBackend(originalElement, target);
+    }
   };
 
   useEffect(() => {
@@ -32,10 +34,10 @@ const ModifyCodeButton: React.FC<ModifyCodeButtonPops> = ({
   }, [isSuccess, isError.message]);
 
   const sendTargetToBackend = async (
-    originalTarget: HTMLElement,
+    originalElement: HTMLElement,
     target: HTMLElement
   ) => {
-    const parsedOriginalTarget = elementToObject(originalTarget);
+    const parsedOriginalTarget = originalElement;
     const parsedNewTarget = elementToObject(target);
 
     const payload = {
@@ -67,8 +69,6 @@ const ModifyCodeButton: React.FC<ModifyCodeButtonPops> = ({
     : isError.message
     ? "bg-rose-600"
     : "bg-cyan-700 hover:bg-cyan-600";
-
-    console.log(" target clasname", target.className, "classlist", [...target.classList])
 
   return (
     <Button

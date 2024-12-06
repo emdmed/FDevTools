@@ -1,7 +1,8 @@
-import { useState, ReactNode, useEffect, useRef, memo } from "react";
+import { useState, ReactNode, useEffect, useRef, useMemo } from "react";
 import ContextMenu from "./components/contextMenu/contextMenu";
 import "./styles.css";
-
+import Box from "./components/box/box";
+import { elementToObject } from "./helpers/elementToObject";
 interface ContextMenuState {
   visible: boolean;
   event: {
@@ -16,6 +17,7 @@ interface CheckerProps {
 }
 
 const Checker: React.FC<CheckerProps> = ({ children }) => {
+
   const [contextMenu, setContextMenu] = useState<ContextMenuState>({
     visible: false,
     event: {
@@ -24,7 +26,9 @@ const Checker: React.FC<CheckerProps> = ({ children }) => {
       completeEvent: null,
     },
   });
+
   const [isGrid, setIsGrid] = useState<boolean>(false);
+
   const [dimensions, setDimensions] = useState({
     height: 0,
     width: 0,
@@ -33,21 +37,16 @@ const Checker: React.FC<CheckerProps> = ({ children }) => {
     top: 0,
     left: 0,
   });
+
   const observerRef = useRef<ResizeObserver | null>(null);
-  const [isControlPressed, setIsControlPressed] = useState(false);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const [hoveredElement, setHoveredElement] = useState<{
-    tagName: string;
-    id: string;
-    position: any;
-  }>({
-    tagName: "",
-    id: "",
-    position: "",
-  });
+
+  const [originalElement, setOriginalElement] = useState<any>(
+    null
+  );
 
   const onContextMenu = (e: React.MouseEvent<HTMLDivElement>) => {
     const target = e.target as HTMLElement;
+    setOriginalElement(elementToObject(target));
     e.preventDefault();
     if (e.ctrlKey) {
       setContextMenu({
@@ -78,56 +77,22 @@ const Checker: React.FC<CheckerProps> = ({ children }) => {
     }
   };
 
-  useEffect(() => {
+/*   useEffect(() => {
     if (!contextMenu.visible) {
       setIsGrid(false);
     } else {
       setIsGrid(false);
     }
-  }, [contextMenu.visible]);
-
-  const handleKeyDown = (event: KeyboardEvent) => {
-    if (event.key === "Control") {
-      setIsControlPressed(true);
-    }
-  };
-
-  const handleKeyUp = (event: KeyboardEvent) => {
-    if (event.key === "Control") {
-      setIsControlPressed(false);
-    }
-  };
-
-  const handleMouseMove = (event: MouseEvent) => {
-    setMousePosition({ x: event.clientX, y: event.clientY });
-
-    const element = document.elementFromPoint(event.clientX, event.clientY);
-    if (element) {
-      setHoveredElement({
-        tagName: element.tagName.toLowerCase(), // Tag name of the element
-        id: element.id || "(no id)", // ID of the element or fallback if not present
-        position: element.getBoundingClientRect(),
-      });
-    }
-  };
-
-  useEffect(() => {
-    window.addEventListener("keydown", handleKeyDown);
-    window.addEventListener("keyup", handleKeyUp);
-    window.addEventListener("mousemove", handleMouseMove);
-
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-      window.removeEventListener("keyup", handleKeyUp);
-      window.removeEventListener("mousemove", handleMouseMove);
-    };
-  }, []);
+  }, [contextMenu.visible]); */
 
   const targetPosition = contextMenu.event.completeEvent
     ? (
         contextMenu.event.completeEvent.target as HTMLElement
       )?.getBoundingClientRect()
     : null;
+
+  console.log("originalElement", originalElement);
+  console.log("rerender")
 
   return (
     <div onContextMenu={onContextMenu}>
@@ -160,37 +125,10 @@ const Checker: React.FC<CheckerProps> = ({ children }) => {
           ></div>
         </div>
       )}
-      {isControlPressed && (
-        <div
-          style={{
-            position: "absolute",
-            top: hoveredElement.position.top - 30,
-            bottom: hoveredElement.position.bottom,
-            left: hoveredElement.position.left,
-            right: hoveredElement.position.right,
-          }}
-          className="w-[50px] h-[25px] bg-cyan-500 text-white p-2 rounded shadow flex items-center justify-center"
-        >
-          <small className="font-bold">{`${hoveredElement.tagName}`}</small>
-        </div>
-      )}
-      {hoveredElement.tagName && isControlPressed && (
-        <div
-          className="border-2 border-cyan-500"
-          style={{
-            position: "absolute",
-            top: hoveredElement.position.top,
-            bottom: hoveredElement.position.bottom,
-            left: hoveredElement.position.left,
-            right: hoveredElement.position.right,
-            pointerEvents: "none",
-            height: hoveredElement.position.height,
-            width: hoveredElement.position.width,
-          }}
-        ></div>
-      )}
+      <Box />
       {contextMenu.visible && (
         <ContextMenu
+          originalElement={originalElement}
           setIsGrid={setIsGrid}
           setContextMenu={setContextMenu}
           contextMenu={contextMenu}
