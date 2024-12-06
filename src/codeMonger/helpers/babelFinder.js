@@ -63,8 +63,6 @@ export function findReactElementInCode(code, target, newTarget, filePath) {
 
                     let classNameAttr = path.node.openingElement.attributes.filter(attr => attr.name.name === "className")[0] || false
 
-                    console.log("classNameAttr", !!classNameAttr?.value?.value, "attributes.class", !!target?.attributes?.class)
-
                     const classNameMatch = !!classNameAttr?.value?.value === !!target?.attributes?.class
 
                     const idAttribute = path.node.openingElement.attributes.find(

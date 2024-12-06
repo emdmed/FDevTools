@@ -39,7 +39,6 @@ app.post('/modify-element', (req, res) => {
   for (const file of reactFiles) {
     const code = fs.readFileSync(file, 'utf-8');
     const matchingCode = findReactElementInCode(code, parsedOriginalTarget, parsedNewTarget, file);
-    console.log("matchingCode", matchingCode)
 
     if (matchingCode) {
       return res.json({

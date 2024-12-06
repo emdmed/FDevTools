@@ -123,8 +123,6 @@ const Checker: React.FC<CheckerProps> = ({ children }) => {
     };
   }, []);
 
-  console.log("HOVERED ELEMENT", hoveredElement);
-
   const targetPosition = contextMenu.event.completeEvent
     ? (
         contextMenu.event.completeEvent.target as HTMLElement
