@@ -27,7 +27,6 @@ export function findReactFiles(dir) {
 const addOrModifyClass = ({ newTarget, classNameAttr, path }) => {
 
     if (classNameAttr?.value && classNameAttr?.value?.value || classNameAttr?.value?.value === "") {
-        console.log("classNameAttr.value.value ", classNameAttr.value.value, " newTarget.attributes.className", newTarget.attributes)
         classNameAttr.value.value = newTarget.attributes.class
     } else {
         path.node.openingElement.attributes.push({
@@ -55,7 +54,7 @@ const innerHtmlMatch = (babelElement, target) => {
         .join("");
 
 
-    if (babelElementInnerHtml === target.innerHTML) return true
+    if (babelElementInnerHtml.trim() === target.innerHTML.trim()) return true
 
     return false
 }
