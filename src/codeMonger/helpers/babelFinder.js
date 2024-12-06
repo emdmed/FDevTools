@@ -48,28 +48,31 @@ const writeModifedCode = ({ ast, filePath }) => {
 }
 
 const innerHtmlMatch = (babelElement, target) => {
-    if (!babelElement.innerHtml || !target.innerHtml) return false
+    const children = babelElement.children
+    const babelElementInnerHtml = children
+        .filter((child) => child.type === "JSXText")
+        .map((child) => child.value)
+        .join("");
 
-    if (babelElement.innerHTML === target.innerHTML) return false
+
+    if (babelElementInnerHtml === target.innerHTML) return true
 
     return false
 }
 
 const classMatch = (babelElement, target) => {
-
     let classNameAttr = babelElement.attributes.filter(attr => attr.name.name === "className")[0] || false
+    console.log("classNameAttr", classNameAttr.value.value, "target.attributes", target.attributes.class)
+    if (!classNameAttr.value.value && !target.attributes.class) return { classNameMatch: true, classNameAttr }
 
-    if (!classNameAttr && !target.attributes.className) return { classNameMatch: true, classNameAttr }
-
-    if (classNameAttr === target.attributes.className) return { classNameMatch: true, classNameAttr }
+    if (classNameAttr.value.value === target.attributes.class) return { classNameMatch: true, classNameAttr }
 
     return { classNameMatch: false, classNameAttr }
 }
 
 const idMatch = (babelElementId, target) => {
-    if(!babelElementId && !target.attributes.id) return false
-
-    if(babelElementId === target.attributes.id) return true
+    if (!babelElementId && !target.attributes.id) return false
+    if (babelElementId === target.attributes.id) return true
 }
 
 // Function to parse and traverse React code
@@ -95,7 +98,9 @@ export function findReactElementInCode(code, target, newTarget, filePath) {
 
                     const idMatched = idMatch(idAttribute, target)
 
-                    const innerHTMLMatch = innerHtmlMatch(path.node.openingElement, target)
+                    const innerHTMLMatch = innerHtmlMatch(path.node, target)
+
+                    console.log("idMatched", idMatched, "innerHTMLMatch", innerHTMLMatch, "classNameMatch", classNameMatch)
 
                     if (idMatched) {
                         console.log("modify by ID")
