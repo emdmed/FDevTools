@@ -1,6 +1,6 @@
 {
   "name": "fdevtools",
-  "version": "0.3.5",
+  "version": "0.3.6",
   "description": "A dev-tools context menu in your react or nextJS app",
   "type": "module",
   "main": "dist/index.cjs.js",
