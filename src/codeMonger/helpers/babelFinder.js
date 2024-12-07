@@ -1,10 +1,10 @@
 import fs from "fs"
 import path from "path"
-// Babel utilities
+
 import { parse } from '@babel/parser';
 import traverse from '@babel/traverse';
 import generate from '@babel/generator';
-// Utility to recursively find .jsx and .tsx files
+
 export function findReactFiles(dir) {
     const files = fs.readdirSync(dir);
     let reactFiles = [];
@@ -61,10 +61,10 @@ const innerHtmlMatch = (babelElement, target) => {
 
 const classMatch = (babelElement, target) => {
     let classNameAttr = babelElement.attributes.filter(attr => attr.name.name === "className")[0] || false
-    console.log("classNameAttr", classNameAttr.value.value, "target.attributes", target.attributes.class)
-    if (!classNameAttr.value.value && !target.attributes.class) return { classNameMatch: true, classNameAttr }
 
-    if (classNameAttr.value.value === target.attributes.class) return { classNameMatch: true, classNameAttr }
+    if (!classNameAttr?.value?.value && !target?.attributes?.class) return { classNameMatch: true, classNameAttr }
+
+    if (classNameAttr?.value?.value === target?.attributes?.class) return { classNameMatch: true, classNameAttr }
 
     return { classNameMatch: false, classNameAttr }
 }
@@ -74,7 +74,6 @@ const idMatch = (babelElementId, target) => {
     if (babelElementId === target.attributes.id) return true
 }
 
-// Function to parse and traverse React code
 export function findReactElementInCode(code, target, newTarget, filePath) {
 
     try {
@@ -99,10 +98,8 @@ export function findReactElementInCode(code, target, newTarget, filePath) {
 
                     const innerHTMLMatch = innerHtmlMatch(path.node, target)
 
-                    console.log("idMatched", idMatched, "innerHTMLMatch", innerHTMLMatch, "classNameMatch", classNameMatch)
 
                     if (idMatched) {
-                        console.log("modify by ID")
                         const { modified } = addOrModifyClass({ newTarget, classNameAttr, path, code })
 
                         if (modified) {
@@ -115,7 +112,16 @@ export function findReactElementInCode(code, target, newTarget, filePath) {
                         path.stop();
 
                     } else if (innerHTMLMatch && classNameMatch) {
-                        console.log("modify class & inner html")
+                        const { modified } = addOrModifyClass({ newTarget, classNameAttr, path, code })
+
+                        if (modified) {
+                            writeModifedCode({ ast, code, filePath })
+                            modifiedCodeSuccesfully = true
+                        } else {
+                            modifiedCodeSuccesfully = true
+                        }
+                        path.stop();
+                    } else if (innerHTMLMatch) {
                         const { modified } = addOrModifyClass({ newTarget, classNameAttr, path, code })
 
                         if (modified) {

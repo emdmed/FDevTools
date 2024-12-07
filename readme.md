@@ -17,6 +17,27 @@ Import fdevtools and styles
   import FDevTools from "fdevtools";
   import "fdevtools/dist/styles.css"
 ```
+If you want the code modifying feature add this to your "start dev server" script
+
+Vite
+```json
+"dev": "node node_modules/fdevtools/dist/codeMonger/index.cjs & vite",
+```
+NextJS
+```json
+"dev": "node node_modules/fdevtools/dist/codeMonger/index.cjs & next dev",
+```
+This will start a local node server that will modify the code in your project when requested
+
+If you don't want the code modifying feature set the disableCodemonger prop to true
+
+```javascript
+    <FDevTools disableCodemonger={true}>
+      <App />
+    </FDevTools>
+```
+
+
 Add FDevTools to you React or NextJS project
 
 ```javascript
@@ -33,5 +54,18 @@ Add FDevTools to you React or NextJS project
 The context menu should open when "control + right clicking" on any element 
 ## Screenshots
 
-![App Screenshot](https://i.imgur.com/gNVUN3i.png)
+Hold ctrl key to highlight elements
 
+![App Screenshot](https://i.imgur.com/Rp2ypHJ.png)
+
+Ctrl + right click will open the context menu
+
+Press the paper and pen icon next to "Classes" to edit them
+
+![App Screenshot](https://i.imgur.com/UBAbe80.png)
+
+Adding classes into the input separated by space and pressing enter will add them to the selected element in the DOM. Existing or added classes can be deleted by just clicking on them.
+
+Out of editing mode clicking on a class will copy it to the clipboard
+
+![App Screenshot](https://i.imgur.com/T91Yz1n.png)

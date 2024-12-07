@@ -14,10 +14,10 @@ interface ContextMenuState {
 
 interface CheckerProps {
   children: ReactNode;
+  disableCodemonger: boolean;
 }
 
-const Checker: React.FC<CheckerProps> = ({ children }) => {
-
+const Checker: React.FC<CheckerProps> = ({ children, disableCodemonger }) => {
   const [contextMenu, setContextMenu] = useState<ContextMenuState>({
     visible: false,
     event: {
@@ -40,9 +40,7 @@ const Checker: React.FC<CheckerProps> = ({ children }) => {
 
   const observerRef = useRef<ResizeObserver | null>(null);
 
-  const [originalElement, setOriginalElement] = useState<any>(
-    null
-  );
+  const [originalElement, setOriginalElement] = useState<any>(null);
 
   const onContextMenu = (e: React.MouseEvent<HTMLDivElement>) => {
     const target = e.target as HTMLElement;
@@ -61,7 +59,7 @@ const Checker: React.FC<CheckerProps> = ({ children }) => {
       if (observerRef.current) observerRef.current.disconnect();
 
       const observer = new ResizeObserver(() => {
-        const rect = target.getBoundingClientRect(); // Get position and size
+        const rect = target.getBoundingClientRect();
         setDimensions({
           width: rect.width,
           height: rect.height,
@@ -77,22 +75,11 @@ const Checker: React.FC<CheckerProps> = ({ children }) => {
     }
   };
 
-/*   useEffect(() => {
-    if (!contextMenu.visible) {
-      setIsGrid(false);
-    } else {
-      setIsGrid(false);
-    }
-  }, [contextMenu.visible]); */
-
   const targetPosition = contextMenu.event.completeEvent
     ? (
         contextMenu.event.completeEvent.target as HTMLElement
       )?.getBoundingClientRect()
     : null;
-
-  console.log("originalElement", originalElement);
-  console.log("rerender")
 
   return (
     <div onContextMenu={onContextMenu}>
@@ -128,6 +115,7 @@ const Checker: React.FC<CheckerProps> = ({ children }) => {
       <Box />
       {contextMenu.visible && (
         <ContextMenu
+          disableCodemonger={disableCodemonger}
           originalElement={originalElement}
           setIsGrid={setIsGrid}
           setContextMenu={setContextMenu}

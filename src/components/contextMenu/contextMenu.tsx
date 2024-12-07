@@ -33,25 +33,26 @@ interface ContextMenuProps {
     }>
   >;
   setIsGrid: React.Dispatch<React.SetStateAction<boolean>>;
-  originalElement: HTMLElement | null
+  originalElement: HTMLElement | null,
+  disableCodemonger: boolean
 }
 
 const ContextMenu: React.FC<ContextMenuProps> = ({
   contextMenu,
   setContextMenu,
   setIsGrid,
-  originalElement
+  originalElement,
+  disableCodemonger
 }) => {
 
   const target = contextMenu.event.completeEvent?.target as HTMLElement;
-  //const originalTarget = target.cloneNode(true) as HTMLElement;
+
   const [classes, setClasses] = useState([...target.classList]);
 
   const [innerHTMLValue, setInnerHTMLValue] = useState<string>(
     target.innerHTML
   );
-  /*   const [style, setStyle] = useState<CSSStyleDeclaration>(target.style);
-  const [boundingClient] = useState<DOMRect>(target.getBoundingClientRect()); */
+
   const contextMenuRef = useRef(null);
 
   useEffect(() => {
@@ -111,7 +112,7 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
         <CardTitle className="flex justify-between items-center">
           <div className="flex items-center">
             <span className="me-2">{`<${target.localName}>`}</span>
-            <ModifyCodeButton classes={classes} target={target} originalElement={originalElement} />
+            {!disableCodemonger && <ModifyCodeButton classes={classes} target={target} originalElement={originalElement} />}
           </div>
           <div className="flex items-center">
             <ToggleGridButton setIsGrid={setIsGrid} />
