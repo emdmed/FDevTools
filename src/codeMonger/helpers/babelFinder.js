@@ -6,23 +6,27 @@ import traverse from '@babel/traverse';
 import generate from '@babel/generator';
 
 export function findReactFiles(dir) {
-    const files = fs.readdirSync(dir);
     let reactFiles = [];
 
-    for (const file of files) {
-        const fullPath = path.join(dir, file);
-        const stats = fs.statSync(fullPath);
+    try {
+        const files = fs.readdirSync(dir);
 
-        if (stats.isDirectory()) {
-            reactFiles = reactFiles.concat(findReactFiles(fullPath));
-        } else if (file.endsWith('.jsx') || file.endsWith('.tsx')) {
-            reactFiles.push(fullPath);
+        for (const file of files) {
+            const fullPath = path.join(dir, file);
+            const stats = fs.statSync(fullPath);
+
+            if (stats.isDirectory()) {
+                reactFiles = reactFiles.concat(findReactFiles(fullPath));
+            } else if (file.endsWith('.jsx') || file.endsWith('.tsx') || file.endsWith('.js')) {
+                reactFiles.push(fullPath);
+            }
         }
+    } catch (error) {
+        console.error(`Error processing directory ${dir}: ${error.message}`);
     }
 
     return reactFiles;
 }
-
 
 const addOrModifyClass = ({ newTarget, classNameAttr, path }) => {
 
@@ -60,7 +64,7 @@ const innerHtmlMatch = (babelElement, target) => {
 }
 
 const classMatch = (babelElement, target) => {
-    let classNameAttr = babelElement.attributes.filter(attr => attr.name.name === "className")[0] || false
+    let classNameAttr = babelElement.attributes.filter(attr => attr?.name?.name === "className")[0] || false
 
     if (!classNameAttr?.value?.value && !target?.attributes?.class) return { classNameMatch: true, classNameAttr }
 
@@ -85,19 +89,19 @@ export function findReactElementInCode(code, target, newTarget, filePath) {
 
         traverse(ast, {
             JSXElement(path) {
-                const elementName = path.node.openingElement.name.name;
+                const elementName = path.node.openingElement?.name?.name;
+
+                const { classNameMatch, classNameAttr } = classMatch(path.node.openingElement, target)
+
+                const idAttribute = path.node.openingElement.attributes.find(
+                    (attr) => attr?.name && attr?.name?.name === "id"
+                );
+
+                const idMatched = idMatch(idAttribute, target)
+
+                const innerHTMLMatch = innerHtmlMatch(path.node, target)
 
                 if (elementName === target.tagName) {
-                    const { classNameMatch, classNameAttr } = classMatch(path.node.openingElement, target)
-
-                    const idAttribute = path.node.openingElement.attributes.find(
-                        (attr) => attr.name && attr.name.name === "id"
-                    );
-
-                    const idMatched = idMatch(idAttribute, target)
-
-                    const innerHTMLMatch = innerHtmlMatch(path.node, target)
-
 
                     if (idMatched) {
                         const { modified } = addOrModifyClass({ newTarget, classNameAttr, path, code })
@@ -132,8 +136,6 @@ export function findReactElementInCode(code, target, newTarget, filePath) {
                         }
                         path.stop();
                     }
-
-
                 }
             },
         });

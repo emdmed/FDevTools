@@ -10,7 +10,7 @@ const corsOptions = {
 };
 
 const projectRoot = process.cwd();
-const reactSrcPath = path.join(projectRoot);
+const reactSrcPath = path.join(projectRoot, "src");
 
 const app = express();
 const port = 1216;
@@ -23,9 +23,8 @@ app.post('/modify-element', (req, res) => {
 
   const { parsedOriginalTarget, parsedNewTarget } = req.body;
 
-  const projectDir = path.join(__dirname, reactSrcPath); 
   const reactFiles = findReactFiles(reactSrcPath);
-  
+  console.log("reactFiles",reactFiles)
   for (const file of reactFiles) {
     const code = fs.readFileSync(file, 'utf-8');
     const matchingCode = findReactElementInCode(code, parsedOriginalTarget, parsedNewTarget, file);
