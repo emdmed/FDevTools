@@ -47,12 +47,12 @@ const writeModifedCode = ({ ast, filePath }) => {
 }
 
 const innerHtmlMatch = (babelElement, target) => {
+
     const children = babelElement.children
     const babelElementInnerHtml = children
         .filter((child) => child.type === "JSXText")
         .map((child) => child.value)
         .join("");
-
 
     if (babelElementInnerHtml.trim() === target.innerHTML.trim()) return true
 
