@@ -5,15 +5,9 @@ import path from 'path';
 const cors = require('cors');
 
 const corsOptions = {
-  origin: (origin, callback) => {
-    if (!origin || origin.startsWith('http://localhost')) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  methods: 'POST',
-  credentials: true,
+  origin: '*', // Allow requests only from localhost
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  credentials: true, // Enable cookies if needed
 };
 
 const projectRoot = process.cwd();
