@@ -7,7 +7,6 @@ const cors = require('cors');
 const corsOptions = {
   origin: '*', // Allow requests only from localhost
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-  credentials: true, // Enable cookies if needed
 };
 
 const projectRoot = process.cwd();
