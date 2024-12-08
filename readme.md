@@ -52,6 +52,17 @@ Add FDevTools to you React or NextJS project
 ```
 
 The context menu should open when "control + right clicking" on any element 
+## Tailwind
+
+Tailwind won't load all classes when your dev server is started. To fix this you will need to update your tailwind.config.js file and add
+
+```javascript
+  safelist: [
+    { pattern: /.*/ }, // Include all tailwind classes
+  ],
+```
+
+Making this modification will make your dev server first load slower since it has to load all existing Tailwind classes.
 ## Screenshots
 
 Hold ctrl key to highlight elements
